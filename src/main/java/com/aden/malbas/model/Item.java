@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -26,9 +27,11 @@ public abstract class Item {
     private Integer id;
     @NotNull @NotEmpty @NotBlank
     private String name;
-    @NotNull @Valid
+    private String collection;
+    private String description;
+    @NotNull @Min(1)
     private Double price;
-    @NotNull @Valid
+    @NotNull @Min(0)
     private Integer availablePiecesCount;
     @NotNull @NotEmpty @NotBlank
     private List<String> availableColors;

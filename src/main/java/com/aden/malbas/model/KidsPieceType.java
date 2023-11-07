@@ -1,0 +1,31 @@
+package com.aden.malbas.model;
+
+public enum KidsPieceType {
+    T_SHIRT,
+    SWEATER,
+    JACKET,
+    COAT,
+    JEANS,
+    SOCKS,
+    SHORTS,
+    TRACK_SUIT,
+    VEST,
+    PAJAMAS,
+    SHOES,
+    BOOTS,
+    RAINCOAT,
+    SKIRT,
+    DRESS,
+    BLOUSE,
+    SUIT,
+    SHIRT,
+    SUN_HAT,
+    HAT,
+    CAP,
+    SCARF,
+    SUNGLASSES,
+    BAG,
+    BACKPACK,
+    WATCH,
+    SALOPETTE
+}

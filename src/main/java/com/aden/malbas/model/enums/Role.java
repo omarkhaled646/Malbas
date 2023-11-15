@@ -1,4 +1,4 @@
-package com.aden.malbas.model;
+package com.aden.malbas.model.enums;
 
 public enum Role {
     USER,

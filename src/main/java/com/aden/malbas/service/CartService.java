@@ -12,6 +12,7 @@ public class CartService {
     public Cart getCart(Integer cartId) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
 
+        // TODO: Add custom exception
         if(cart == null){
             throw new NullPointerException();
         }

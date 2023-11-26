@@ -17,6 +17,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
+@DiscriminatorValue("women")
 public class WomenItem extends Item{
 
     @NotNull @NotEmpty
@@ -35,9 +36,33 @@ public class WomenItem extends Item{
 
         WomenItem womenItem = new WomenItem(item);
         for(String size: availableSizes){
-            AdultSize adultSize = AdultSize.valueOf(size.toUpperCase());
-            womenItem.availableSizes.add(adultSize);
+            // TODO Add custom exception for size wrong data
+           womenItem.addSize(size);
+
         }
         return womenItem;
+    }
+
+    @Override
+    public void addSize(String sizeName) {
+
+        if(this.availableSizes == null){
+            this.availableSizes = new HashSet<>();
+        }
+
+        try {
+            AdultSize adultSize = AdultSize.valueOf(sizeName.toUpperCase());
+            this.availableSizes.add(adultSize);
+        }catch (IllegalArgumentException exception){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public Boolean isSizeAvailable(String sizeName) {
+
+        AdultSize adultSize = AdultSize.valueOf(sizeName.toUpperCase());
+
+        return this.availableSizes.contains(adultSize);
     }
 }

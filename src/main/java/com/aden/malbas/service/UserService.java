@@ -1,5 +1,6 @@
 package com.aden.malbas.service;
 
+import com.aden.malbas.dto.UserDTO;
 import com.aden.malbas.model.classes.Cart;
 import com.aden.malbas.model.classes.User;
 import com.aden.malbas.model.classes.Wishlist;
@@ -17,7 +18,9 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void save(User user) {
+    public void save(UserDTO userDTO) {
+        User user = new User(userDTO);
+        user.setId(0);
         user.setCart(new Cart());
         user.setWishlist(new Wishlist());
         user.setOrders(new ArrayList<>());
@@ -25,9 +28,11 @@ public class UserService {
     }
 
     @Transactional
-    public void update(User user) {
+    public void update(UserDTO userDTO) {
+        User user = new User(userDTO);
         User userFromDB = userRepository.findById(user.getId()).orElse(null);
 
+        // TODO: Add custom exception
         if(userFromDB == null){
             throw new NullPointerException();
         }
@@ -40,19 +45,14 @@ public class UserService {
     }
 
     @Transactional
-    public void delete(User user) {
-
-        User userFromDB = userRepository.findById(user.getId()).orElse(null);
-
-        if(userFromDB == null){
-            throw new NullPointerException();
-        }
-
-        userRepository.deleteById(user.getId());
+    public void deleteAccount(Integer userId) {
+        userRepository.deleteById(userId);
     }
 
     public User getUser(Integer userId) {
         User user = userRepository.findById(userId).orElse(null);
+
+        // TODO: Add custom exception
         if(user == null){
             throw new NullPointerException();
         }

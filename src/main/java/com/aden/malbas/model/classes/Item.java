@@ -15,17 +15,19 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "category", discriminatorType = DiscriminatorType.STRING)
 public abstract class Item {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "item_id")
     private Integer id;
-    @NotNull @NotEmpty @NotBlank
+    @NotNull @NotEmpty @NotBlank @Column(unique = true)
     private String name;
     private String collection;
     private String description;
     @NotNull @Min(1)
     private Double price;
-    @NotNull @Min(0)
+    @NotNull @Min(1)
     private Integer availablePiecesCount;
     @NotNull @NotEmpty
     @ElementCollection
@@ -33,7 +35,7 @@ public abstract class Item {
             joinColumns = @JoinColumn(name = "item_id"))
     @Column(name = "color")
     private List<String> availableColors;
-    private boolean isOnSale = false;
+//    private boolean isOnSale = false;
     @Min(1)
     private Double salePrice;
     @OneToMany(mappedBy = "item")
@@ -54,8 +56,23 @@ public abstract class Item {
         this.price = item.getPrice();
         this.availablePiecesCount = item.getAvailablePiecesCount();
         this.availableColors = item.getAvailableColors();
-        this.isOnSale = item.getIsOnSale();
         this.salePrice = item.getSalePrice();
     }
 
+    public void addColor(String colorName) {
+
+        if(this.availableColors == null){
+            this.availableColors = new ArrayList<>();
+        }
+
+        this.availableColors.add(colorName);
+    }
+
+    public void addPieces(Item item, Integer piecesCount) {
+        item.availablePiecesCount += piecesCount;
+    }
+
+    public abstract void addSize(String sizeName);
+
+    public abstract Boolean isSizeAvailable(String sizeName);
 }

@@ -17,6 +17,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
+@DiscriminatorValue("personal")
 public class PersonalItem extends Item{
 
     @NotNull @NotEmpty
@@ -35,10 +36,33 @@ public class PersonalItem extends Item{
 
         PersonalItem personalItem = new PersonalItem(item);
         for(String size: availableSizes){
-            NonApparelSize nonApparelSize = NonApparelSize.valueOf(size.toUpperCase());
-            personalItem.availableSizes.add(nonApparelSize);
+            // TODO Add custom exception for size wrong data
+          personalItem.addSize(size);
         }
 
         return personalItem;
+    }
+
+    @Override
+    public void addSize(String sizeName) {
+
+        if(this.availableSizes == null){
+            this.availableSizes = new HashSet<>();
+        }
+
+        try {
+            NonApparelSize nonApparelSize = NonApparelSize.valueOf(sizeName.toUpperCase());
+            this.availableSizes.add(nonApparelSize);
+        }catch (IllegalArgumentException exception){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public Boolean isSizeAvailable(String sizeName) {
+
+        NonApparelSize nonApparelSize = NonApparelSize.valueOf(sizeName.toUpperCase());
+
+        return this.availableSizes.contains(nonApparelSize);
     }
 }

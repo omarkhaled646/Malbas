@@ -1,28 +1,32 @@
 package com.aden.malbas.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import com.aden.malbas.model.classes.Item;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class ItemDTO {
-    @NotNull @NotEmpty @NotBlank
+    private Integer id;
     private String name;
     private String collection;
     private String description;
-    @NotNull @Min(1)
     private Double price;
-    @NotNull @Min(0)
     private Integer availablePiecesCount;
-    @NotNull @NotEmpty
     private List<String> availableColors;
-    private Boolean isOnSale = false;
-    @Min(1)
     private Double salePrice;
 
+    public ItemDTO(Item item){
+        this.id = item.getId();
+        this.name = item.getName();
+        this.collection = item.getCollection();
+        this.description = item.getDescription();
+        this.price = item.getPrice();
+        this.availablePiecesCount = item.getAvailablePiecesCount();
+        this.availableColors = item.getAvailableColors();
+        this.salePrice = item.getSalePrice();
+    }
 
 }

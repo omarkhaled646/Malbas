@@ -1,8 +1,6 @@
 package com.aden.malbas.controller;
 
-import com.aden.malbas.model.enums.Gender;
-import com.aden.malbas.model.enums.Role;
-import com.aden.malbas.model.classes.User;
+import com.aden.malbas.dto.UserDTO;
 import com.aden.malbas.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +23,13 @@ class UserControllerTest {
 
     @Test
     void registerTest() {
-        User user = User
+        UserDTO user = UserDTO
                 .builder()
-                .id(1)
                 .firstName("Omar")
                 .lastName("Galal")
                 .email("Omarkhaled@gmail.com")
                 .password("omarkhaled")
-                .gender(Gender.MALE)
-                .role(Role.USER)
+                .gender("male")
                 .build();
 
         doNothing().when(userService).save(user);
@@ -46,15 +42,13 @@ class UserControllerTest {
 
     @Test
     void editProfile() {
-        User user = User
+        UserDTO user = UserDTO
                 .builder()
-                .id(1)
                 .firstName("Omar")
                 .lastName("Galal")
                 .email("Omarkhaled@gmail.com")
                 .password("omarkhaled")
-                .gender(Gender.MALE)
-                .role(Role.USER)
+                .gender("male")
                 .build();
 
         doNothing().when(userService).update(user);
@@ -67,21 +61,12 @@ class UserControllerTest {
 
     @Test
     void deleteAccount() {
-        User user = User
-                .builder()
-                .id(1)
-                .firstName("Omar")
-                .lastName("Galal")
-                .email("Omarkhaled@gmail.com")
-                .password("omarkhaled")
-                .gender(Gender.MALE)
-                .role(Role.USER)
-                .build();
+        Integer userId = 1;
 
-        doNothing().when(userService).delete(user);
+        doNothing().when(userService).deleteAccount(userId);
 
-        String result = userController.deleteAccount(user).getBody();
-        verify(userService, times(1)).delete(user);
+        String result = userController.deleteAccount(userId).getBody();
+        verify(userService, times(1)).deleteAccount(userId);
 
         assertEquals("User deleted successfully", result);
     }

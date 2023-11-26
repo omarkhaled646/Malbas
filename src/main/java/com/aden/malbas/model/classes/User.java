@@ -1,5 +1,6 @@
 package com.aden.malbas.model.classes;
 
+import com.aden.malbas.dto.UserDTO;
 import com.aden.malbas.model.enums.AdultSize;
 import com.aden.malbas.model.enums.Gender;
 import com.aden.malbas.model.enums.Role;
@@ -15,10 +16,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.List;
-
-
 
 @Data
 @AllArgsConstructor
@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private String firstName;
     @NotNull @NotEmpty @NotBlank
     private String lastName;
-    @NotNull @NotEmpty @NotBlank
+    @NotNull @NotEmpty @NotBlank @Column(unique = true)
     @Pattern(regexp = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-]+)(\\.[a-zA-Z]{2,5}){1,4}$")
     private String email;
     @NotNull @NotEmpty @NotBlank
@@ -51,6 +51,26 @@ public class User implements UserDetails {
     private Wishlist wishlist;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Order> orders;
+
+    public User(UserDTO userDTO) {
+        this.firstName = userDTO.getFirstName();
+        this.lastName = userDTO.getLastName();
+        this.email = userDTO.getEmail();
+        this.password = userDTO.getPassword();
+        this.role = Role.USER;
+        // TODO Add custom exception for gender wrong values
+        try {
+            this.gender = Gender.valueOf(userDTO.getGender().toUpperCase());
+        }catch (IllegalArgumentException exception){
+            throw new IllegalArgumentException();
+        }
+        // TODO Add custom exception for size wrong values
+        try {
+            this.size = AdultSize.valueOf(userDTO.getSize().toUpperCase());
+        }catch (IllegalArgumentException exception){
+            throw new IllegalArgumentException();
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

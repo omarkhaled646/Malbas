@@ -24,6 +24,7 @@ public abstract class Item {
     @NotNull @NotEmpty @NotBlank @Column(unique = true)
     private String name;
     private String collection;
+    @NotNull
     private String description;
     @NotNull @Min(1)
     private Double price;

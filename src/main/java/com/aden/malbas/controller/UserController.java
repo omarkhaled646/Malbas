@@ -1,7 +1,9 @@
 package com.aden.malbas.controller;
 
+import com.aden.malbas.dto.CartItemDTO;
 import com.aden.malbas.dto.ItemDTO;
 import com.aden.malbas.dto.UserDTO;
+import com.aden.malbas.dto.WishlistItemDTO;
 import com.aden.malbas.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,11 +20,11 @@ public class UserController {
     private final UserService userService;
     private final CartController cartController;
     private final ItemController itemController;
+    private final WishlistController wishlistController;
 
-    private final String defaultCategory = "women";
-
-    @GetMapping
+    @GetMapping("/Malbas")
     public  ResponseEntity<List<ItemDTO>> malbasMain(){
+        String defaultCategory = "women";
         List<ItemDTO> items = itemController.findBy(defaultCategory);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
@@ -45,15 +47,72 @@ public class UserController {
         return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
     }
 
-    @PostMapping("{userId}/cart/add")
+    @GetMapping("{userId}/cart")
+    public ResponseEntity<List<CartItemDTO>> getCartItems(@PathVariable Integer userId){
+        Integer cartId = userService.getUser(userId).getCart().getId();
+        List<CartItemDTO> cartItems = cartController.getCartItems(cartId);
+        return new ResponseEntity<>(cartItems, HttpStatus.OK);
+    }
+
+    @PostMapping("{userId}/cart/addItem")
     public ResponseEntity<String> addItemToTheCart(@PathVariable Integer userId,
                                                    @RequestParam Integer itemId,
-                                                   @RequestParam  Integer itemCount,
-                                                   @RequestParam String sizeName){
+                                                   @RequestParam  Integer numberOfPieces,
+                                                   @RequestParam String size){
         Integer cartId = userService.getUser(userId).getCart().getId();
-        cartController.addItemToTheCart(cartId, itemId, itemCount, sizeName);
-        return new ResponseEntity<>("Items added to the cart successfully",
+        cartController.addItemToTheCart(cartId, itemId, numberOfPieces, size);
+        return new ResponseEntity<>("Item added to the cart successfully",
                 HttpStatus.CREATED);
+    }
+
+    @PutMapping("{userId}/cart/updateItem")
+    public ResponseEntity<String> updateItemInTheCart(@PathVariable Integer userId,
+                                                       @RequestParam Integer itemId,
+                                                       @RequestParam(required = false)
+                                                       Integer numberOfPieces,
+                                                       @RequestParam(required = false)
+                                                       String size){
+        Integer cartId = userService.getUser(userId).getCart().getId();
+        cartController.updateItemInTheCart(cartId, itemId, numberOfPieces, size);
+        return new ResponseEntity<>("Item updated in the cart successfully",
+                HttpStatus.OK);
+    }
+
+    @DeleteMapping("{userId}/cart/deleteItem")
+    public ResponseEntity<String> deleteItemFromTheCart(@PathVariable Integer userId,
+                                                        @RequestParam Integer itemId){
+
+        Integer cartId = userService.getUser(userId).getCart().getId();
+        cartController.deleteItemFromTheCart(cartId, itemId);
+        return new ResponseEntity<>("Item deleted from the cart successfully",
+                HttpStatus.OK);
+    }
+
+    @GetMapping("{userId}/wishlist")
+    public ResponseEntity<List<WishlistItemDTO>> getWishlistItems(@PathVariable Integer userId){
+        Integer wishlistId = userService.getUser(userId).getWishlist().getId();
+        List<WishlistItemDTO> wishlistItems = wishlistController.getWishlistItems(wishlistId);
+        return new ResponseEntity<>(wishlistItems, HttpStatus.OK);
+    }
+
+    @PostMapping("{userId}/wishlist/addItem")
+    public ResponseEntity<String> addItemToTheWishlist(@PathVariable Integer userId,
+                                                       @RequestParam Integer itemId){
+
+        Integer wishlistId = userService.getUser(userId).getWishlist().getId();
+        wishlistController.addItemToTheWishlist(wishlistId, itemId);
+        return new ResponseEntity<>("Item added to the wishlist successfully",
+                HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("{userId}/wishlist/deleteItem")
+    public ResponseEntity<String> deleteItemFromTheWishlist(@PathVariable Integer userId,
+                                                            @RequestParam Integer itemId){
+
+        Integer wishlistId = userService.getUser(userId).getWishlist().getId();
+        wishlistController.deleteItemFromTheWishList(wishlistId, itemId);
+        return new ResponseEntity<>("Item deleted from the wishlist successfully",
+                HttpStatus.OK);
     }
 
     @PostMapping("/admin/addItem")

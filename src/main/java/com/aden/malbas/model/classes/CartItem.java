@@ -29,7 +29,7 @@ public class CartItem {
     Item item;
 
     @NotNull @Min(1)
-    private Integer itemCount;
+    private Integer numberOfPieces;
 
     private String size;
 }

@@ -11,15 +11,10 @@ public enum NonApparelSize {
     LARGE,
     CUSTOM_SIZE;
 
-    private final int width;
-    private final int height;
+    private Integer width;
+    private Integer height;
 
-    NonApparelSize() {
-        this.width = 0;
-        this.height = 0;
-    }
-
-    NonApparelSize(int width, int height) {
+    public void setCustomSize(Integer width, Integer height){
         this.width = width;
         this.height = height;
     }

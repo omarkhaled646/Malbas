@@ -3,24 +3,20 @@ package com.aden.malbas.model.classes;
 import com.aden.malbas.dto.ItemDTO;
 import com.aden.malbas.model.enums.AdultSize;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
 @NoArgsConstructor
 @Entity
 @DiscriminatorValue("men")
 public class MenItem extends Item{
 
-    @NotNull @NotEmpty
     @ElementCollection
     @CollectionTable(name = "adult_item_available_sizes",
             joinColumns = @JoinColumn(name = "item_id"))
@@ -33,10 +29,10 @@ public class MenItem extends Item{
         super(item);
     }
 
-    public static Item createMenItem(ItemDTO item, List<String> availableSizes) {
+    public static Item createMenItem(ItemDTO item) {
 
         MenItem menItem = new MenItem(item);
-        for(String size: availableSizes){
+        for(String size: item.getAvailableSizes()){
             // TODO Add custom exception for size wrong data
             menItem.addSize(size);
         }
@@ -65,6 +61,17 @@ public class MenItem extends Item{
         AdultSize adultSize = AdultSize.valueOf(sizeName.toUpperCase());
 
         return this.availableSizes.contains(adultSize);
+    }
+
+    @Override
+    public List<String> getAvailableSizes() {
+        List<String> availableSizes = new ArrayList<>();
+
+        for(AdultSize size: this.availableSizes){
+            availableSizes.add(size.name());
+        }
+
+        return availableSizes;
     }
 
 }

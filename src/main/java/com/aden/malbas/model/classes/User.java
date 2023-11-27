@@ -5,10 +5,6 @@ import com.aden.malbas.model.enums.AdultSize;
 import com.aden.malbas.model.enums.Gender;
 import com.aden.malbas.model.enums.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,19 +25,13 @@ public class User implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "user_id")
     private Integer id;
-    @NotNull @NotEmpty @NotBlank
     private String firstName;
-    @NotNull @NotEmpty @NotBlank
     private String lastName;
-    @NotNull @NotEmpty @NotBlank @Column(unique = true)
-    @Pattern(regexp = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-]+)(\\.[a-zA-Z]{2,5}){1,4}$")
     private String email;
-    @NotNull @NotEmpty @NotBlank
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
     private String password;
-    @NotNull @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private Gender gender;
-    @NotNull @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private Role role;
     @Enumerated(EnumType.STRING)
     private AdultSize size;
@@ -57,16 +47,11 @@ public class User implements UserDetails {
         this.lastName = userDTO.getLastName();
         this.email = userDTO.getEmail();
         this.password = userDTO.getPassword();
-        this.role = Role.USER;
         // TODO Add custom exception for gender wrong values
         try {
             this.gender = Gender.valueOf(userDTO.getGender().toUpperCase());
-        }catch (IllegalArgumentException exception){
-            throw new IllegalArgumentException();
-        }
-        // TODO Add custom exception for size wrong values
-        try {
             this.size = AdultSize.valueOf(userDTO.getSize().toUpperCase());
+            this.role = Role.valueOf(userDTO.getRole().toUpperCase());
         }catch (IllegalArgumentException exception){
             throw new IllegalArgumentException();
         }

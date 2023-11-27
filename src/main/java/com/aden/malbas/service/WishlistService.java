@@ -5,6 +5,7 @@ import com.aden.malbas.model.classes.Item;
 import com.aden.malbas.model.classes.Wishlist;
 import com.aden.malbas.repository.ItemRepository;
 import com.aden.malbas.repository.WishlistRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class WishlistService {
     private final WishlistRepository wishlistRepository;
     private final ItemRepository itemRepository;
 
+    @Transactional
     public void addItemToTheWishlist(Integer wishlistId, Integer itemId) {
         Item item = itemRepository.findById(itemId).orElse(null);
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
@@ -37,6 +39,7 @@ public class WishlistService {
         wishlistRepository.save(wishlist);
     }
 
+    @Transactional
     public void deleteItemFromTheWishlist(Integer wishlistId, Integer itemId) {
         Item item = itemRepository.findById(itemId).orElse(null);
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);

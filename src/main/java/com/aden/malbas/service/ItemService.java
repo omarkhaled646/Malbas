@@ -27,12 +27,12 @@ public class ItemService {
     }
 
     @Transactional
-    public void add(ItemDTO itemDTO, String category, List<String> availableSizes) {
+    public void add(ItemDTO itemDTO, String category) {
 
-        if(category == null || availableSizes == null){
+        if(category == null){
             throw new NullPointerException();
         }
-        Item newItem =  createItemByCategory(itemDTO, category, availableSizes);
+        Item newItem =  createItemByCategory(itemDTO, category);
         if (newItem == null){
             throw new NullPointerException();
         }
@@ -41,25 +41,24 @@ public class ItemService {
 
     }
 
-    private Item createItemByCategory(ItemDTO itemDTO, String category,
-                                      List<String> availableSizes) {
+    private Item createItemByCategory(ItemDTO itemDTO, String category) {
 
         Item newItem = null;
         switch (category.toLowerCase()){
             case "men":
-                newItem = MenItem.createMenItem(itemDTO, availableSizes);
+                newItem = MenItem.createMenItem(itemDTO);
                 break;
             case "women":
-                newItem = WomenItem.createWomenItem(itemDTO, availableSizes);
+                newItem = WomenItem.createWomenItem(itemDTO);
                 break;
             case "kids":
-                newItem = KidsItem.createKidsItem(itemDTO, availableSizes);
+                newItem = KidsItem.createKidsItem(itemDTO);
                 break;
             case "home":
-                newItem = HomeItem.createHomeItem(itemDTO, availableSizes);
+                newItem = HomeItem.createHomeItem(itemDTO);
                 break;
             case "personal":
-                newItem = PersonalItem.createPersonalItem(itemDTO, availableSizes);
+                newItem = PersonalItem.createPersonalItem(itemDTO);
             default:
                 newItem = null;
 
@@ -68,6 +67,7 @@ public class ItemService {
         return newItem;
     }
 
+    @Transactional
     public void deleteItem(Integer itemId) {
         itemRepository.deleteById(itemId);
     }
@@ -82,6 +82,7 @@ public class ItemService {
         return itemsDTO;
     }
 
+    @Transactional
     public void addColor(Integer itemId, String colorName) {
         Item item = itemRepository.findById(itemId).orElse(null);
 
@@ -94,6 +95,7 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    @Transactional
     public void addSize(Integer itemId, String sizeName) {
         Item item = itemRepository.findById(itemId).orElse(null);
 
@@ -106,6 +108,7 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    @Transactional
     public void addSale(Integer itemId, Double salePrice) {
         Item item = itemRepository.findById(itemId).orElse(null);
 
@@ -118,6 +121,7 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    @Transactional
     public void removeSale(Integer itemId) {
         Item item = itemRepository.findById(itemId).orElse(null);
 
@@ -130,6 +134,7 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    @Transactional
     public void addPieces(Integer itemId, Integer piecesCount) {
         Item item = itemRepository.findById(itemId).orElse(null);
 

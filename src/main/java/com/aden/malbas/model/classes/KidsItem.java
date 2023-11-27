@@ -5,16 +5,15 @@ import com.aden.malbas.model.enums.KidsSize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
 @NoArgsConstructor
 @Entity
 @DiscriminatorValue("kids")
@@ -33,10 +32,10 @@ public class KidsItem extends Item{
         super(item);
     }
 
-    public static Item createKidsItem(ItemDTO item, List<String> availableSizes) {
+    public static Item createKidsItem(ItemDTO item) {
 
             KidsItem kidsItem = new KidsItem(item);
-            for(String size: availableSizes){
+            for(String size: item.getAvailableSizes()){
                 // TODO Add custom exception for size wrong data
                kidsItem.addSize(size);
         }
@@ -65,6 +64,17 @@ public class KidsItem extends Item{
         KidsSize kidsSize = KidsSize.valueOf(sizeName.toUpperCase());
 
         return this.availableSizes.contains(kidsSize);
+    }
+
+    @Override
+    public List<String> getAvailableSizes() {
+        List<String> availableSizes = new ArrayList<>();
+
+        for(KidsSize size: this.availableSizes){
+            availableSizes.add(size.name());
+        }
+
+        return availableSizes;
     }
 
 }

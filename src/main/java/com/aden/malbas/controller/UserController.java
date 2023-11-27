@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/Malbas")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -22,10 +22,16 @@ public class UserController {
     private final ItemController itemController;
     private final WishlistController wishlistController;
 
-    @GetMapping("/Malbas")
+    @GetMapping
     public  ResponseEntity<List<ItemDTO>> malbasMain(){
         String defaultCategory = "women";
         List<ItemDTO> items = itemController.findBy(defaultCategory);
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    @GetMapping("{category}")
+    public  ResponseEntity<List<ItemDTO>> getCategoryItems(@PathVariable String category){
+        List<ItemDTO> items = itemController.findBy(category);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
@@ -116,9 +122,8 @@ public class UserController {
     }
 
     @PostMapping("/admin/addItem")
-    public void add(@RequestBody ItemDTO item, @RequestParam String category,
-                               @RequestParam List<String> availableSizes){
-        itemController.add(item, category, availableSizes);
+    public void add(@RequestBody ItemDTO item, @RequestParam String category){
+        itemController.add(item, category);
     }
 
     @PutMapping("/admin/updateItem/{itemId}/addColor")

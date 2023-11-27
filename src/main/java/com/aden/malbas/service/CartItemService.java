@@ -44,6 +44,7 @@ public class CartItemService {
         cartITemRepository.save(cartItem);
     }
 
+    @Transactional
     public void updateItem(Integer cartId, Integer itemId, Integer numberOfPieces, String size) {
         cartItemKey = new CartItemKey(cartId, itemId);
         CartItem cartItemObject = cartITemRepository.findById(cartItemKey).orElse(null);
@@ -68,6 +69,7 @@ public class CartItemService {
         cartITemRepository.save(cartItemObject);
     }
 
+    @Transactional
     public void deleteItem(Integer cartId, Integer itemId) {
         cartItemKey = new CartItemKey(cartId, itemId);
 

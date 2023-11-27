@@ -2,10 +2,6 @@ package com.aden.malbas.model.classes;
 
 import com.aden.malbas.dto.ItemDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,23 +17,17 @@ public abstract class Item {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "item_id")
     private Integer id;
-    @NotNull @NotEmpty @NotBlank @Column(unique = true)
+    @Column(unique = true)
     private String name;
     private String collection;
-    @NotNull
     private String description;
-    @NotNull @Min(1)
     private Double price;
-    @NotNull @Min(1)
     private Integer availablePiecesCount;
-    @NotNull @NotEmpty
     @ElementCollection
     @CollectionTable(name = "item_available_colors",
             joinColumns = @JoinColumn(name = "item_id"))
     @Column(name = "color")
     private List<String> availableColors;
-//    private boolean isOnSale = false;
-    @Min(1)
     private Double salePrice;
     @OneToMany(mappedBy = "item")
     private List<OrderItem> orders;
@@ -76,4 +66,6 @@ public abstract class Item {
     public abstract void addSize(String sizeName);
 
     public abstract Boolean isSizeAvailable(String sizeName);
+
+    public abstract List<String> getAvailableSizes();
 }

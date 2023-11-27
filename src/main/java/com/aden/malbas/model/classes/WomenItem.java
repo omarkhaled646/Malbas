@@ -5,16 +5,15 @@ import com.aden.malbas.model.enums.AdultSize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
 @NoArgsConstructor
 @Entity
 @DiscriminatorValue("women")
@@ -32,10 +31,10 @@ public class WomenItem extends Item{
         super(item);
     }
 
-    public static Item createWomenItem(ItemDTO item, List<String> availableSizes) {
+    public static Item createWomenItem(ItemDTO item) {
 
         WomenItem womenItem = new WomenItem(item);
-        for(String size: availableSizes){
+        for(String size: item.getAvailableSizes()){
             // TODO Add custom exception for size wrong data
            womenItem.addSize(size);
 
@@ -64,5 +63,16 @@ public class WomenItem extends Item{
         AdultSize adultSize = AdultSize.valueOf(sizeName.toUpperCase());
 
         return this.availableSizes.contains(adultSize);
+    }
+
+    @Override
+    public List<String> getAvailableSizes() {
+        List<String> availableSizes = new ArrayList<>();
+
+        for(AdultSize size: this.availableSizes){
+            availableSizes.add(size.name());
+        }
+
+        return availableSizes;
     }
 }

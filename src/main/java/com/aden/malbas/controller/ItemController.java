@@ -12,8 +12,8 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
-    public void add(ItemDTO item, String category, List<String> availableSizes) {
-        itemService.add(item, category, availableSizes);
+    public void add(ItemDTO item, String category) {
+        itemService.add(item, category);
     }
 
     public void deleteItem(Integer itemId) {

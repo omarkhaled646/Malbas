@@ -56,7 +56,7 @@ public class UserController {
     @GetMapping("{userId}/cart")
     public ResponseEntity<List<CartItemDTO>> getCartItems(@PathVariable Integer userId){
         Integer cartId = userService.getUser(userId).getCart().getId();
-        List<CartItemDTO> cartItems = cartController.getCartItems(cartId);
+        List<CartItemDTO> cartItems = cartController.getCartItem(cartId);
         return new ResponseEntity<>(cartItems, HttpStatus.OK);
     }
 
@@ -119,6 +119,15 @@ public class UserController {
         wishlistController.deleteItemFromTheWishList(wishlistId, itemId);
         return new ResponseEntity<>("Item deleted from the wishlist successfully",
                 HttpStatus.OK);
+    }
+
+    @PutMapping("{userId}/moveItemFromCartToWishlist")
+    public void moveItemFromCartToWishlist(@PathVariable Integer userId,
+                                           @RequestParam Integer itemId){
+        Integer cartId = userService.getUser(userId).getCart().getId();
+        Integer wishlistId = userService.getUser(userId).getWishlist().getId();
+        cartController.deleteItemFromTheCart(cartId, itemId);
+        wishlistController.addItemToTheWishlist(wishlistId, itemId);
     }
 
     @PostMapping("/admin/addItem")

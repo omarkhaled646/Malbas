@@ -16,7 +16,6 @@ public class WishlistItemDTO {
     @NotNull @NotEmpty @NotBlank
     private String itemDescription;
     private String itemCollection;
-    private String size;
     @NotNull @Min(1)
     private Double price;
     @Min(1)
@@ -27,16 +26,6 @@ public class WishlistItemDTO {
 
         this.itemName = itemName;
         this.itemDescription = itemDescription;
-        this.itemCollection = itemCollection;
-        this.price = price;
-    }
-
-    public void setItemDTO(String itemName, String itemDescription,  String itemCollection,
-                           Double price, String size){
-
-        this.itemName = itemName;
-        this.itemDescription = itemDescription;
-        this.size = size;
         this.itemCollection = itemCollection;
         this.price = price;
     }

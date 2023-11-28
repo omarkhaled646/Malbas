@@ -4,6 +4,7 @@ import com.aden.malbas.dto.UserDTO;
 import com.aden.malbas.model.classes.Cart;
 import com.aden.malbas.model.classes.User;
 import com.aden.malbas.model.classes.Wishlist;
+import com.aden.malbas.model.enums.Role;
 import com.aden.malbas.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,22 +22,23 @@ public class UserService {
     public void save(UserDTO userDTO) {
         User user = new User(userDTO);
         user.setId(0);
-        user.setCart(new Cart());
-        user.setWishlist(new Wishlist());
-        user.setOrders(new ArrayList<>());
+        if(user.getRole() == Role.USER){
+            user.setCart(new Cart());
+            user.setWishlist(new Wishlist());
+            user.setOrders(new ArrayList<>());
+        }
         userRepository.save(user);
     }
 
     @Transactional
     public void update(UserDTO userDTO) {
-        User user = new User(userDTO);
-        User userFromDB = userRepository.findById(user.getId()).orElse(null);
-
+        User userFromDB = userRepository.findById(userDTO.getId()).orElse(null);
+        User user;
         // TODO: Add custom exception
         if(userFromDB == null){
             throw new NullPointerException();
         }
-
+        user = new User(userDTO);
         user.setCart(userFromDB.getCart());
         user.setWishlist(userFromDB.getWishlist());
         user.setOrders(userFromDB.getOrders());

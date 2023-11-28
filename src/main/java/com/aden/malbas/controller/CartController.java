@@ -28,9 +28,10 @@ public class CartController {
         cartItemService.deleteItem(cartId, itemId);
     }
 
-    public List<CartItemDTO> getCartItems(Integer cartId) {
+    public List<CartItemDTO> getCartItem(Integer cartId) {
         List<CartItemDTO> cartItems = cartItemService.getCartItems(cartId);
 
         return cartItems;
     }
+
 }

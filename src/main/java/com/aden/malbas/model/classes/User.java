@@ -43,6 +43,7 @@ public class User implements UserDetails {
     private List<Order> orders;
 
     public User(UserDTO userDTO) {
+        this.id = userDTO.getId();
         this.firstName = userDTO.getFirstName();
         this.lastName = userDTO.getLastName();
         this.email = userDTO.getEmail();

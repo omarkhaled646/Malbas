@@ -14,4 +14,5 @@ public interface CartITemRepository extends JpaRepository<CartItem, CartItemKey>
 
     @Query("SELECT ci.item.id FROM CartItem ci WHERE ci.cart.id = :cartId")
     List<Integer> findCartItems(@Param("cartId") Integer cartId);
+
 }

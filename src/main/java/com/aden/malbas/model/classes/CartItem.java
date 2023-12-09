@@ -29,4 +29,13 @@ public class CartItem {
     private Integer numberOfPieces;
 
     private String size;
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                ", item=" + item +
+                ", numberOfPieces=" + numberOfPieces +
+                ", size='" + size + '\'' +
+                '}';
+    }
 }

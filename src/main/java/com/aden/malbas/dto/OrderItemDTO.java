@@ -11,30 +11,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartItemDTO {
+public class OrderItemDTO {
 
     @NotNull @NotEmpty @NotBlank
     private String itemName;
-    @NotNull @NotEmpty @NotBlank
-    private String itemDescription;
     @NotNull
     private String size;
     @NotNull @Min(1)
     private Integer numberOfPieces;
     @NotNull @Min(1)
     private Double price;
-    @Min(1)
-    private Double salePrice;
-
-
-    public void setItemDTO(String itemName, String itemDescription, Double price,
-                           String size, Integer numberOfPieces){
-
-        this.itemName = itemName;
-        this.itemDescription = itemDescription;
-        this.size = size;
-        this.numberOfPieces = numberOfPieces;
-        this.price = price;
-    }
 
 }

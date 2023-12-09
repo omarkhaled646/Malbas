@@ -29,12 +29,11 @@ public abstract class Item {
     @Column(name = "color")
     private List<String> availableColors;
     private Double salePrice;
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<OrderItem> orders;
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<CartItem> carts;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST,CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "wishlist_item",
             joinColumns = @JoinColumn(name = "item_id"),
             inverseJoinColumns = @JoinColumn(name = "wishlist_id"))
@@ -68,4 +67,18 @@ public abstract class Item {
     public abstract Boolean isSizeAvailable(String sizeName);
 
     public abstract List<String> getAvailableSizes();
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", collection='" + collection + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", availablePiecesCount=" + availablePiecesCount +
+                ", availableColors=" + availableColors +
+                ", salePrice=" + salePrice +
+                '}';
+    }
 }

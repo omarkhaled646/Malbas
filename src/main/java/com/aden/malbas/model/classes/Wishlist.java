@@ -15,8 +15,7 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "wishlist_id")
     private Integer id;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE,
-                                                   CascadeType.PERSIST,CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "wishlist_item",
             joinColumns = @JoinColumn(name = "wishlist_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id"))

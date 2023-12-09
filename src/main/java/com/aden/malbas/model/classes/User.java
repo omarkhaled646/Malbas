@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,8 +40,9 @@ public class User implements UserDetails {
     private Cart cart;
     @OneToOne(cascade = CascadeType.ALL) @JoinColumn(name = "wishlist_id")
     private Wishlist wishlist;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
+
 
     public User(UserDTO userDTO) {
         this.id = userDTO.getId();
@@ -91,5 +93,15 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+    public void add(Order order) {
+
+        if(this.orders == null){
+            this.orders = new ArrayList<>();
+        }
+
+        this.orders.add(order);
     }
 }

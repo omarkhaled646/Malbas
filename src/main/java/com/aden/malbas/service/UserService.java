@@ -2,6 +2,7 @@ package com.aden.malbas.service;
 
 import com.aden.malbas.dto.UserDTO;
 import com.aden.malbas.model.classes.Cart;
+import com.aden.malbas.model.classes.Order;
 import com.aden.malbas.model.classes.User;
 import com.aden.malbas.model.classes.Wishlist;
 import com.aden.malbas.model.enums.Role;
@@ -9,8 +10,6 @@ import com.aden.malbas.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,6 @@ public class UserService {
         if(user.getRole() == Role.USER){
             user.setCart(new Cart());
             user.setWishlist(new Wishlist());
-            user.setOrders(new ArrayList<>());
         }
         userRepository.save(user);
     }
@@ -41,7 +39,6 @@ public class UserService {
         user = new User(userDTO);
         user.setCart(userFromDB.getCart());
         user.setWishlist(userFromDB.getWishlist());
-        user.setOrders(userFromDB.getOrders());
 
         userRepository.save(user);
     }
@@ -60,5 +57,16 @@ public class UserService {
         }
 
         return user;
+    }
+
+
+    public void add(Order order, Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+
+        if(user == null){
+            throw new NullPointerException();
+        }
+
+        user.add(order);
     }
 }

@@ -3,7 +3,6 @@ package com.aden.malbas.service;
 import com.aden.malbas.dto.WishlistItemDTO;
 import com.aden.malbas.model.classes.Item;
 import com.aden.malbas.model.classes.Wishlist;
-import com.aden.malbas.repository.ItemRepository;
 import com.aden.malbas.repository.WishlistRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,47 +16,7 @@ import java.util.List;
 public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
-    private final ItemRepository itemRepository;
-
-    @Transactional
-    public void addItemToTheWishlist(Integer wishlistId, Integer itemId) {
-        Item item = itemRepository.findById(itemId).orElse(null);
-        Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
-
-        // TODO: Add custom exception
-        if(item == null){
-            throw new NullPointerException();
-        }
-
-        // TODO: Add custom exception
-        if(wishlist == null){
-            throw new NullPointerException();
-        }
-
-        wishlist.add(item);
-
-        wishlistRepository.save(wishlist);
-    }
-
-    @Transactional
-    public void deleteItemFromTheWishlist(Integer wishlistId, Integer itemId) {
-        Item item = itemRepository.findById(itemId).orElse(null);
-        Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
-
-        // TODO: Add custom exception
-        if(item == null){
-            throw new NullPointerException();
-        }
-
-        // TODO: Add custom exception
-        if(wishlist == null){
-            throw new NullPointerException();
-        }
-
-        wishlist.delete(item);
-
-        wishlistRepository.save(wishlist);
-    }
+    private final ItemService itemService;
 
     public List<WishlistItemDTO> getWishlistItems(Integer wishlistId) {
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
@@ -85,4 +44,45 @@ public class WishlistService {
 
         return wishlistItems;
     }
+
+    @Transactional
+    public void addItem(Integer wishlistId, Integer itemId) {
+        Item item = itemService.getItem(itemId);
+        Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
+
+        // TODO: Add custom exception
+        if(item == null){
+            throw new NullPointerException();
+        }
+
+        // TODO: Add custom exception
+        if(wishlist == null){
+            throw new NullPointerException();
+        }
+
+        wishlist.add(item);
+
+        wishlistRepository.save(wishlist);
+    }
+
+    @Transactional
+    public void deleteItem(Integer wishlistId, Integer itemId) {
+        Item item = itemService.getItem(itemId);
+        Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
+
+        // TODO: Add custom exception
+        if(item == null){
+            throw new NullPointerException();
+        }
+
+        // TODO: Add custom exception
+        if(wishlist == null){
+            throw new NullPointerException();
+        }
+
+        wishlist.delete(item);
+
+        wishlistRepository.save(wishlist);
+    }
+
 }

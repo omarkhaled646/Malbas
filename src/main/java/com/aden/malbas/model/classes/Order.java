@@ -2,7 +2,6 @@ package com.aden.malbas.model.classes;
 
 import com.aden.malbas.model.enums.Status;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,12 +24,11 @@ public class Order {
                                    CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
-    @NotNull @Min(1)
     private Double totalCost;
     @Enumerated(EnumType.STRING)
-    private Status orderStatus;
+    private Status status;
 
     @Override
     public String toString() {
@@ -38,7 +36,7 @@ public class Order {
                 "id=" + id +
                 ", items=" + items +
                 ", totalCost=" + totalCost +
-                ", orderStatus=" + orderStatus +
+                ", orderStatus=" + status +
                 '}';
     }
 }

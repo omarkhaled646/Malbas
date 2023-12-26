@@ -2,9 +2,11 @@ package com.aden.malbas.service;
 
 import com.aden.malbas.dto.ItemDTO;
 import com.aden.malbas.model.classes.*;
+import com.aden.malbas.model.mappers.ItemMapper;
 import com.aden.malbas.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import java.util.List;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    @Autowired
+    private ItemMapper itemMapper;
 
     public Item getItem(Integer itemId) {
         Item item = itemRepository.findById(itemId).orElse(null);
@@ -46,19 +50,19 @@ public class ItemService {
         Item newItem = null;
         switch (category.toLowerCase()){
             case "men":
-                newItem = MenItem.createMenItem(itemDTO);
+                newItem = itemMapper.menItemDTOToItem(itemDTO);
                 break;
             case "women":
-                newItem = WomenItem.createWomenItem(itemDTO);
+                newItem = itemMapper.womenItemDTOToItem(itemDTO);
                 break;
             case "kids":
-                newItem = KidsItem.createKidsItem(itemDTO);
+                newItem = itemMapper.kidsItemDTOToItem(itemDTO);
                 break;
             case "home":
-                newItem = HomeItem.createHomeItem(itemDTO);
+                newItem = itemMapper.homeItemDTOToItem(itemDTO);
                 break;
             case "personal":
-                newItem = PersonalItem.createPersonalItem(itemDTO);
+                newItem = itemMapper.personalItemDTOToItem(itemDTO);
             default:
                 newItem = null;
 
@@ -77,7 +81,7 @@ public class ItemService {
         List<ItemDTO> itemsDTO = new ArrayList<>();
 
         for (Item item: items){
-            itemsDTO.add(new ItemDTO(item));
+            itemsDTO.add(itemMapper.itemToItemDTO(item));
         }
         return itemsDTO;
     }

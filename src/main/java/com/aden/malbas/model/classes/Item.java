@@ -62,6 +62,8 @@ public abstract class Item {
         item.availablePiecesCount += piecesCount;
     }
 
+    public abstract void addAvailableSizes(List<String> sizeNames);
+
     public abstract void addSize(String sizeName);
 
     public abstract Boolean isSizeAvailable(String sizeName);

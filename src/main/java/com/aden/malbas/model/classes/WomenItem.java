@@ -31,28 +31,25 @@ public class WomenItem extends Item{
         super(item);
     }
 
-    public static Item createWomenItem(ItemDTO item) {
+    @Override
+    public void addAvailableSizes(List<String> sizeNames) {
 
-        WomenItem womenItem = new WomenItem(item);
-        for(String size: item.getAvailableSizes()){
-            // TODO Add custom exception for size wrong data
-           womenItem.addSize(size);
-
+        for (String sizeName : sizeNames) {
+            this.addSize(sizeName);
         }
-        return womenItem;
     }
 
     @Override
     public void addSize(String sizeName) {
 
-        if(this.availableSizes == null){
+        if (this.availableSizes == null) {
             this.availableSizes = new HashSet<>();
         }
 
         try {
             AdultSize adultSize = AdultSize.valueOf(sizeName.toUpperCase());
             this.availableSizes.add(adultSize);
-        }catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException();
         }
     }

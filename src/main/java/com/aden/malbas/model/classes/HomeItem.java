@@ -31,40 +31,36 @@ public class HomeItem extends Item{
         super(item);
     }
 
-    public static Item createHomeItem(ItemDTO item) {
+    @Override
+    public void addAvailableSizes(List<String> sizeNames) {
 
-        HomeItem homeItem = new HomeItem(item);
-        for(String size: item.getAvailableSizes()){
-            // TODO Add custom exception for size wrong data
-            homeItem.addSize(size);
+        for (String sizeName : sizeNames) {
+            this.addSize(sizeName);
         }
-
-        return homeItem;
     }
 
     @Override
     public void addSize(String sizeName) {
 
-        if(this.availableSizes == null){
+        if (this.availableSizes == null) {
             this.availableSizes = new HashSet<>();
         }
 
         try {
             NonApparelSize nonApparelSize;
-            if(sizeName.contains("-")){
+            if (sizeName.contains("-")) {
                 String[] customSize = sizeName.split("-");
                 nonApparelSize = NonApparelSize.valueOf(customSize[0]);
                 nonApparelSize.setCustomSize(Integer.parseInt(customSize[1]),
                         Integer.parseInt(customSize[2]));
-            }
-            else{
-            nonApparelSize = NonApparelSize.valueOf(sizeName.toUpperCase());
+            } else {
+                nonApparelSize = NonApparelSize.valueOf(sizeName.toUpperCase());
             }
             this.availableSizes.add(nonApparelSize);
-        }catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             // TODO: Add custom exception
             throw new IllegalArgumentException();
-        }catch (ArrayIndexOutOfBoundsException exception){
+        } catch (ArrayIndexOutOfBoundsException exception) {
             // TODO: Add custom exception
             throw new ArrayIndexOutOfBoundsException();
         }

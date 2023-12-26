@@ -31,16 +31,5 @@ public class ItemDTO {
     @Min(1)
     private Double salePrice;
 
-    public ItemDTO(Item item){
-        this.id = item.getId();
-        this.name = item.getName();
-        this.collection = item.getCollection();
-        this.description = item.getDescription();
-        this.price = item.getPrice();
-        this.availablePiecesCount = item.getAvailablePiecesCount();
-        this.availableColors = item.getAvailableColors();
-        this.salePrice = item.getSalePrice();
-        this.availableSizes = item.getAvailableSizes();
-    }
 
 }

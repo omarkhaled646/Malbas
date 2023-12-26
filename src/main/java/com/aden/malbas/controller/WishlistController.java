@@ -18,8 +18,8 @@ public class WishlistController {
 
     @GetMapping("wishlist/{wishlistId}")
     public ResponseEntity<List<WishlistItemDTO>> getWishlistItems(@PathVariable Integer wishlistId){
-        List<WishlistItemDTO> wishlistItems = wishlistService.getWishlistItems(wishlistId);
-        return new ResponseEntity<>(wishlistItems, HttpStatus.OK);
+        List<WishlistItemDTO> wishlistItemDTOs = wishlistService.getWishlistItems(wishlistId);
+        return new ResponseEntity<>(wishlistItemDTOs, HttpStatus.OK);
     }
 
     @PostMapping("wishlist/{wishlistId}/addItem")

@@ -28,6 +28,7 @@ public class User implements UserDetails {
     private Integer id;
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -40,25 +41,8 @@ public class User implements UserDetails {
     private Cart cart;
     @OneToOne(cascade = CascadeType.ALL) @JoinColumn(name = "wishlist_id")
     private Wishlist wishlist;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
-
-
-    public User(UserDTO userDTO) {
-        this.id = userDTO.getId();
-        this.firstName = userDTO.getFirstName();
-        this.lastName = userDTO.getLastName();
-        this.email = userDTO.getEmail();
-        this.password = userDTO.getPassword();
-        // TODO Add custom exception for gender wrong values
-        try {
-            this.gender = Gender.valueOf(userDTO.getGender().toUpperCase());
-            this.size = AdultSize.valueOf(userDTO.getSize().toUpperCase());
-            this.role = Role.valueOf(userDTO.getRole().toUpperCase());
-        }catch (IllegalArgumentException exception){
-            throw new IllegalArgumentException();
-        }
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

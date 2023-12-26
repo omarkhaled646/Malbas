@@ -19,14 +19,14 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<List<ItemDTO>> malbasMain() {
         String defaultCategory = "women";
-        List<ItemDTO> items = itemService.findBy(defaultCategory);
-        return new ResponseEntity<>(items, HttpStatus.OK);
+        List<ItemDTO> itemDTOs = itemService.findBy(defaultCategory);
+        return new ResponseEntity<>(itemDTOs, HttpStatus.OK);
     }
 
     @GetMapping("{category}")
     public ResponseEntity<List<ItemDTO>> getCategoryItems(@PathVariable String category) {
-        List<ItemDTO> items = itemService.findBy(category);
-        return new ResponseEntity<>(items, HttpStatus.OK);
+        List<ItemDTO> itemDTOs = itemService.findBy(category);
+        return new ResponseEntity<>(itemDTOs, HttpStatus.OK);
     }
 
     @PostMapping("/admin/addItem")

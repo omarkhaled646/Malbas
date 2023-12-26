@@ -3,9 +3,11 @@ package com.aden.malbas.service;
 import com.aden.malbas.dto.WishlistItemDTO;
 import com.aden.malbas.model.classes.Item;
 import com.aden.malbas.model.classes.Wishlist;
+import com.aden.malbas.model.mappers.WishlistItemMapper;
 import com.aden.malbas.repository.WishlistRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ItemService itemService;
+    @Autowired
+    private final WishlistItemMapper wishlistItemMapper;
 
     public List<WishlistItemDTO> getWishlistItems(Integer wishlistId) {
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
@@ -31,14 +35,7 @@ public class WishlistService {
         WishlistItemDTO wishlistItemDTO;
 
         for(Item item: items){
-            wishlistItemDTO = new WishlistItemDTO();
-            wishlistItemDTO.setItemDTO(item.getName(), item.getDescription(),
-                    item.getCollection(), item.getPrice());
-
-            if(item.getSalePrice() != null){
-                wishlistItemDTO.setSalePrice(item.getSalePrice());
-            }
-
+            wishlistItemDTO = wishlistItemMapper.itemToWishlistItemDTO(item);
             wishlistItems.add(wishlistItemDTO);
         }
 

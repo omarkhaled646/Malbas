@@ -1,15 +1,17 @@
-package com.aden.malbas.service;
+    package com.aden.malbas.service;
 
 import com.aden.malbas.dto.CartItemDTO;
 import com.aden.malbas.dto.OrderDTO;
 import com.aden.malbas.dto.OrderItemDTO;
 import com.aden.malbas.model.classes.*;
 import com.aden.malbas.model.enums.Status;
+import com.aden.malbas.model.mappers.OrderItemMapper;
+import com.aden.malbas.model.mappers.OrderMapper;
 import com.aden.malbas.repository.OrderItemRepository;
 import com.aden.malbas.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +26,10 @@ public class OrderService {
     private final CartService cartService;
     private final UserService userService;
     private final ItemService itemService;
+    @Autowired
+    private final OrderMapper orderMapper;
+    @Autowired
+    private final OrderItemMapper orderItemMapper;
 
     public List<OrderDTO> getOrders(Integer userId) {
         List<Order> orders = orderRepository.findOrdersBy(userId);
@@ -31,8 +37,7 @@ public class OrderService {
         OrderDTO orderDTO;
 
         for(Order order: orders){
-            orderDTO = new OrderDTO(order.getId(), order.getOrderStatus().toString(),
-                                    order.getTotalCost());
+            orderDTO = orderMapper.orderToOrderDTO(order);
             ordersDTO.add(orderDTO);
         }
 
@@ -45,8 +50,7 @@ public class OrderService {
         List<OrderItem> orderItems = orderItemRepository.findBy(orderId);
 
         for(OrderItem orderItem: orderItems){
-            orderItemDTO = new OrderItemDTO(orderItem.getItem().getName(), orderItem.getSize(),
-                                            orderItem.getNumberOfPieces(), orderItem.getPrice());
+            orderItemDTO = orderItemMapper.orderItemToOrderItemDTO(orderItem);
 
             orderItemsDTO.add(orderItemDTO);
         }
@@ -65,7 +69,7 @@ public class OrderService {
         user = userService.getUser(userId);
 
         for(CartItemDTO cartItem: cartItems){
-            if(cartItem.getSalePrice() != null){
+            if(cartItem.getSalePrice() != 0.0){
                 totalCost += cartItem.getSalePrice();
             }
             else{
@@ -76,7 +80,7 @@ public class OrderService {
         order = Order
                 .builder()
                 .user(user)
-                .orderStatus(Status.PAID)
+                .status(Status.PAID)
                 .totalCost(totalCost)
                 .build();
 
@@ -111,7 +115,7 @@ public class OrderService {
                     .size(cartItem.getSize())
                     .build();
 
-            if(cartItem.getSalePrice() != null){
+            if(cartItem.getSalePrice() != 0.0){
                 orderItem.setPrice(cartItem.getSalePrice());
             }
 
@@ -130,7 +134,7 @@ public class OrderService {
             throw new RuntimeException();
         }
 
-        order.setOrderStatus(Status.valueOf(status.toUpperCase()));
+        order.setStatus(Status.valueOf(status.toUpperCase()));
         orderRepository.save(order);
     }
 }

@@ -1,0 +1,3 @@
+INSERT INTO user (first_name, last_name, email, password, gender, role) VALUES ('ahmed', 'tafwer', 'admin', 'admin', 'male', 'admin');
+INSERT INTO user (first_name, last_name, email, password, gender, role) VALUES ('ahmed', 'tawfer', 'ahmed@gmail.com', 'ahmed123', 'male', 'user');
+INSERT INTO user (first_name, last_name, email, password, gender, role) VALUES ('omar', 'khaled', 'omar@gmail.com', 'omar3110', 'male', 'user');

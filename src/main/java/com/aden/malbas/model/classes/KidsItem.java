@@ -32,28 +32,25 @@ public class KidsItem extends Item{
         super(item);
     }
 
-    public static Item createKidsItem(ItemDTO item) {
+    @Override
+    public void addAvailableSizes(List<String> sizeNames) {
 
-            KidsItem kidsItem = new KidsItem(item);
-            for(String size: item.getAvailableSizes()){
-                // TODO Add custom exception for size wrong data
-               kidsItem.addSize(size);
+        for (String sizeName : sizeNames) {
+            this.addSize(sizeName);
         }
-
-            return kidsItem;
-        }
+    }
 
     @Override
     public void addSize(String sizeName) {
 
-        if(this.availableSizes == null){
+        if (this.availableSizes == null) {
             this.availableSizes = new HashSet<>();
         }
 
         try {
             KidsSize kidsSize = KidsSize.valueOf(sizeName.toUpperCase());
             this.availableSizes.add(kidsSize);
-        }catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException();
         }
     }

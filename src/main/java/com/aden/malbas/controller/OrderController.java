@@ -20,15 +20,15 @@ public class OrderController {
 
     @GetMapping("{userId}/orders")
     public ResponseEntity<List<OrderDTO>> getOrders(@PathVariable Integer userId){
-        List<OrderDTO> ordersDTO = orderService.getOrders(userId);
-        return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
+        List<OrderDTO> orderDTOs = orderService.getOrders(userId);
+        return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
     }
 
     @GetMapping("{userId}/orders/{orderId}")
     public ResponseEntity<List<OrderItemDTO>> getOrderInfo(@PathVariable Integer userId,
                                                            @PathVariable Integer orderId){
-        List<OrderItemDTO> orderItemsDTO = orderService.getOrderInfo(userId, orderId);
-        return new ResponseEntity<>(orderItemsDTO, HttpStatus.OK);
+        List<OrderItemDTO> orderItemDTOs = orderService.getOrderInfo(userId, orderId);
+        return new ResponseEntity<>(orderItemDTOs, HttpStatus.OK);
     }
 
     @PostMapping("{userId}/createOrder")

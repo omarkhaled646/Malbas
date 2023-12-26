@@ -2,10 +2,12 @@ package com.aden.malbas.service;
 
 import com.aden.malbas.dto.CartItemDTO;
 import com.aden.malbas.model.classes.*;
+import com.aden.malbas.model.mappers.CartItemMapper;
 import com.aden.malbas.repository.CartITemRepository;
 import com.aden.malbas.repository.CartRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ItemService itemService;
     private final WishlistService wishlistService;
+    @Autowired
+    private CartItemMapper cartItemMapper;
     private CartItemKey cartItemKey;
 
     @Transactional
@@ -120,15 +124,8 @@ public class CartService {
             throw new NullPointerException();
         }
 
+        cartItemDTO = cartItemMapper.cartItemToCartItemDTO(cartItem, item);
 
-        cartItemDTO = new CartItemDTO();
-        cartItemDTO.setItemDTO(item.getName(), item.getDescription(),
-                item.getPrice(), cartItem.getSize(),
-                cartItem.getNumberOfPieces());
-
-        if(item.getSalePrice() != null){
-            cartItemDTO.setSalePrice(item.getSalePrice());
-        }
 
       return cartItemDTO;
     }

@@ -19,8 +19,8 @@ public class CartController {
 
     @GetMapping("cart/{cartId}")
     public ResponseEntity<List<CartItemDTO>> getCartItems(@PathVariable Integer cartId){
-        List<CartItemDTO> cartItems = cartService.getCartItems(cartId);
-        return new ResponseEntity<>(cartItems, HttpStatus.OK);
+        List<CartItemDTO> cartItemDTOs = cartService.getCartItems(cartId);
+        return new ResponseEntity<>(cartItemDTOs, HttpStatus.OK);
     }
 
     @PostMapping("cart/{cartId}/addItem")

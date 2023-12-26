@@ -1,6 +1,9 @@
 package com.aden.malbas.controller;
 
 import com.aden.malbas.dto.UserDTO;
+import com.aden.malbas.request.AuthenticationRequest;
+import com.aden.malbas.request.AuthenticationResponse;
+import com.aden.malbas.request.RegisterRequest;
 import com.aden.malbas.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,15 +17,23 @@ public class UserController {
 
     private final UserService userService;
 
+
     @PostMapping("register")
-    public ResponseEntity<String> register(@RequestBody UserDTO user){
-        userService.save(user);
-        return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest registerRequest)
+            throws IllegalAccessException{
+        return new ResponseEntity<>(userService.register(registerRequest), HttpStatus.CREATED);
+    }
+
+    @PostMapping("login")
+    public ResponseEntity<AuthenticationResponse> login(
+            @RequestBody AuthenticationRequest request
+    ) throws IllegalAccessException {
+        return new ResponseEntity<>(userService.authenticate(request), HttpStatus.OK);
     }
 
     @PutMapping("editProfile")
-    public ResponseEntity<String> editProfile(@RequestBody UserDTO user){
-        userService.update(user);
+    public ResponseEntity<String> editProfile(@RequestBody UserDTO userDTO){
+        userService.update(userDTO);
         return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
     }
 

@@ -21,10 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -60,7 +56,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        Map<String, Object> claims = convertUserToMap(user);
+        // Map<String, Object> claims = convertUserToMap(user);
 
         var token = jwtService.generateToken(user.getUsername());
 
@@ -80,11 +76,11 @@ public class UserService {
                         request.getPassword()
                 )
         );
-
+        System.out.println("Here");
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        Map<String, Object> claims = convertUserToMap(user);
-        var token = jwtService.generateToken(user.getUsername(), claims);
-
+        // Map<String, Object> claims = convertUserToMap(user);
+        var token = jwtService.generateToken(user.getUsername());
+        System.out.println(user);
         return AuthenticationResponse
                 .builder()
                 .id(user.getId())
@@ -136,19 +132,22 @@ public class UserService {
         user.add(order);
     }
 
-    private Map<String, Object> convertUserToMap(User user) throws IllegalAccessException {
+   /* private Map<String, Object> convertUserToMap(User user) throws IllegalAccessException {
         Map<String, Object> map = new HashMap<>();
         Class<?> userClass = user.getClass();
 
         for (Field field : userClass.getDeclaredFields()) {
-                field.setAccessible(true);
+            field.setAccessible(true);
+            String fieldName = field.getName();
+            if (!fieldName.equals("cart") && !fieldName.equals("order") && !fieldName.equals("wishlist")) {
                 Object value = field.get(user);
                 if (value != null) {
                     map.put(field.getName(), value);
                 }
+            }
         }
 
         return map;
-    }
+    }*/
 
 }

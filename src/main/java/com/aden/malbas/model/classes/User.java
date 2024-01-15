@@ -1,6 +1,5 @@
 package com.aden.malbas.model.classes;
 
-import com.aden.malbas.dto.UserDTO;
 import com.aden.malbas.model.enums.AdultSize;
 import com.aden.malbas.model.enums.Gender;
 import com.aden.malbas.model.enums.Role;

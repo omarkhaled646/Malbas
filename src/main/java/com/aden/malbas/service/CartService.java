@@ -5,6 +5,7 @@ import com.aden.malbas.model.classes.*;
 import com.aden.malbas.model.mappers.CartItemMapper;
 import com.aden.malbas.repository.CartITemRepository;
 import com.aden.malbas.repository.CartRepository;
+import com.aden.malbas.request.CartItemRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class CartService {
 
     private final CartITemRepository cartITemRepository;
     private final CartRepository cartRepository;
+    private final UserService userService;
     private final ItemService itemService;
     private final WishlistService wishlistService;
     @Autowired
@@ -26,13 +28,14 @@ public class CartService {
     private CartItemKey cartItemKey;
 
     @Transactional
-    public void addItem(Integer cartId, Integer itemId, Integer numberOfPieces, String size){
-        Item item = itemService.getItem(itemId);
+    public void addItem(Integer userId, CartItemRequest cartItemRequest){
+        Item item = itemService.getItem(cartItemRequest.getItemId());
+        Integer cartId = userService.getUser(userId).getCart().getId();
         Cart cart = cartRepository.findById(cartId).orElse(null);
-        cartItemKey = new CartItemKey(cartId, itemId);
+        cartItemKey = new CartItemKey(cartId, cartItemRequest.getItemId());
 
         // TODO: Add custom exception
-        if(!item.isSizeAvailable(size)){
+        if(!item.isSizeAvailable(cartItemRequest.getSize())){
             throw new RuntimeException();
         }
 
@@ -46,16 +49,17 @@ public class CartService {
                 .cartItemKey(cartItemKey)
                 .cart(cart)
                 .item(item)
-                .numberOfPieces(numberOfPieces)
-                .size(size)
+                .numberOfPieces(cartItemRequest.getNumberOfPieces())
+                .size(cartItemRequest.getSize())
                 .build();
 
         cartITemRepository.save(cartItem);
     }
 
     @Transactional
-    public void updateItem(Integer cartId, Integer itemId, Integer numberOfPieces, String size) {
-        cartItemKey = new CartItemKey(cartId, itemId);
+    public void updateItem(Integer userId, CartItemRequest cartItemRequest) {
+        Integer cartId = userService.getUser(userId).getCart().getId();
+        cartItemKey = new CartItemKey(cartId, cartItemRequest.getItemId());
         CartItem cartItem = cartITemRepository.findById(cartItemKey).orElse(null);
 
         // TODO: Add custom exception
@@ -63,29 +67,32 @@ public class CartService {
             throw new NullPointerException();
         }
 
-        if(numberOfPieces != null){
-            cartItem.setNumberOfPieces(numberOfPieces);
+        if(cartItemRequest.getNumberOfPieces() != null){
+            cartItem.setNumberOfPieces(cartItemRequest.getNumberOfPieces());
         }
 
-        if(size != null){
+        if(cartItemRequest.getSize() != null){
 
-            if(!cartItem.getItem().isSizeAvailable(size)){
+            if(!cartItem.getItem().isSizeAvailable(cartItemRequest.getSize())){
                 throw new RuntimeException();
             }
-            cartItem.setSize(size);
+            cartItem.setSize(cartItem.getSize());
         }
 
         cartITemRepository.save(cartItem);
     }
 
     @Transactional
-    public void deleteItem(Integer cartId, Integer itemId) {
+    public void deleteItem(Integer userId, Integer itemId) {
+        Integer cartId = userService.getUser(userId).getCart().getId();
+        System.out.println(cartId);
         cartItemKey = new CartItemKey(cartId, itemId);
 
         cartITemRepository.deleteById(cartItemKey);
     }
 
-    public List<CartItemDTO> getCartItems(Integer cartId) {
+    public List<CartItemDTO> getCartItems(Integer userId) {
+        Integer cartId = userService.getUser(userId).getCart().getId();
         List<Integer> itemIds = cartITemRepository.findCartItems(cartId);
         List<CartItemDTO> cartItems = new ArrayList<>();
         CartItemDTO cartItemDTO;
@@ -98,7 +105,8 @@ public class CartService {
         return cartItems;
     }
 
-    public List<CartItemDTO> getItems(Integer cartId, List<Integer> itemIds) {
+    public List<CartItemDTO> getItems(Integer userId, List<Integer> itemIds) {
+        Integer cartId = userService.getUser(userId).getCart().getId();
         List<CartItemDTO> cartItems = new ArrayList<>();
         CartItemDTO cartItemDTO;
 
@@ -130,16 +138,16 @@ public class CartService {
       return cartItemDTO;
     }
 
-    public void deleteItems(Integer cartId, List<Integer> itemIds) {
-
+    public void deleteItems(Integer userId, List<Integer> itemIds) {
+        Integer cartId = userService.getUser(userId).getCart().getId();
         for(Integer id: itemIds){
             this.deleteItem(cartId, id);
         }
     }
 
-    public void moveItemFromCartToWishlist(Integer cartId, Integer wishlistId, Integer itemId) {
-        CartItemDTO cartItemDTO = generateCartItemDTO(itemId, cartId);
+    public void moveItemFromCartToWishlist(Integer userId, Integer itemId) {
+        Integer cartId = userService.getUser(userId).getCart().getId();
         this.deleteItem(cartId, itemId);
-        wishlistService.addItem(wishlistId, itemId);
+        wishlistService.addItem(userId, itemId);
     }
 }

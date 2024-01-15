@@ -30,8 +30,8 @@ public class ItemController {
     }
 
     @PostMapping("/admin/addItem")
-    public ResponseEntity<String> add(@RequestBody ItemDTO item, @RequestParam String category) {
-        itemService.add(item, category);
+    public ResponseEntity<String> add(@RequestBody ItemDTO item) {
+        itemService.add(item);
         return new ResponseEntity<>("Item added successfully", HttpStatus.CREATED);
     }
 

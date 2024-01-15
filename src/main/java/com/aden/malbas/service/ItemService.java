@@ -31,12 +31,12 @@ public class ItemService {
     }
 
     @Transactional
-    public void add(ItemDTO itemDTO, String category) {
+    public void add(ItemDTO itemDTO) {
 
-        if(category == null){
+        if(itemDTO.getCategory() == null){
             throw new NullPointerException();
         }
-        Item newItem =  createItemByCategory(itemDTO, category);
+        Item newItem =  createItemByCategory(itemDTO, itemDTO.getCategory());
         if (newItem == null){
             throw new NullPointerException();
         }

@@ -1,6 +1,5 @@
 package com.aden.malbas.dto;
 
-import com.aden.malbas.model.classes.Item;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,6 +16,7 @@ public class ItemDTO {
     private Integer id;
     @NotNull @NotEmpty @NotBlank
     private String name;
+    private String category;
     private String collection;
     @NotNull
     private String description;

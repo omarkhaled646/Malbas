@@ -5,10 +5,13 @@ import com.aden.malbas.request.AuthenticationRequest;
 import com.aden.malbas.request.AuthenticationResponse;
 import com.aden.malbas.request.RegisterRequest;
 import com.aden.malbas.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/Malbas")
@@ -19,10 +22,10 @@ public class UserController {
 
 
     @PostMapping("register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest registerRequest)
+    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest registerRequest)
             throws IllegalAccessException{
         return new ResponseEntity<>(userService.register(registerRequest), HttpStatus.CREATED);
-    }
+        }
 
     @PostMapping("login")
     public ResponseEntity<AuthenticationResponse> login(
@@ -32,7 +35,7 @@ public class UserController {
     }
 
     @PutMapping("editProfile")
-    public ResponseEntity<String> editProfile(@RequestBody UserDTO userDTO){
+    public ResponseEntity<String> editProfile(@Valid @RequestBody UserDTO userDTO){
         userService.update(userDTO);
         return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
     }

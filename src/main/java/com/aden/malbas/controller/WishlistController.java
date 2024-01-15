@@ -16,24 +16,24 @@ public class WishlistController {
 
     private final WishlistService wishlistService;
 
-    @GetMapping("wishlist/{wishlistId}")
-    public ResponseEntity<List<WishlistItemDTO>> getWishlistItems(@PathVariable Integer wishlistId){
-        List<WishlistItemDTO> wishlistItemDTOs = wishlistService.getWishlistItems(wishlistId);
+    @GetMapping("wishlist/{userId}")
+    public ResponseEntity<List<WishlistItemDTO>> getWishlistItems(@PathVariable Integer userId){
+        List<WishlistItemDTO> wishlistItemDTOs = wishlistService.getWishlistItems(userId);
         return new ResponseEntity<>(wishlistItemDTOs, HttpStatus.OK);
     }
 
-    @PostMapping("wishlist/{wishlistId}/addItem")
-    public ResponseEntity<String> addItem(@PathVariable Integer wishlistId,
-                                          @RequestParam Integer itemId){
-        wishlistService.addItem(wishlistId, itemId);
+    @PostMapping("wishlist/{userId}/addItem/{itemId}")
+    public ResponseEntity<String> addItem(@PathVariable Integer userId,
+                                          @PathVariable Integer itemId){
+        wishlistService.addItem(userId, itemId);
         return new ResponseEntity<>("Item added to the wishlist successfully",
                 HttpStatus.CREATED);
     }
 
-    @DeleteMapping("wishlist/{wishlistId}/deleteItem")
-    public ResponseEntity<String> deleteItem(@PathVariable Integer wishlistId,
-                                             @RequestParam Integer itemId){
-        wishlistService.addItem(wishlistId, itemId);
+    @DeleteMapping("wishlist/{userId}/deleteItem/{itemId}")
+    public ResponseEntity<String> deleteItem(@PathVariable Integer userId,
+                                             @PathVariable Integer itemId){
+        wishlistService.deleteItem(userId, itemId);
         return new ResponseEntity<>("Item deleted from the wishlist successfully",
                 HttpStatus.OK);
     }

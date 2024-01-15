@@ -9,6 +9,7 @@ import com.aden.malbas.model.mappers.OrderItemMapper;
 import com.aden.malbas.model.mappers.OrderMapper;
 import com.aden.malbas.repository.OrderItemRepository;
 import com.aden.malbas.repository.OrderRepository;
+import com.aden.malbas.request.OrderCreationRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +60,9 @@ public class OrderService {
     }
 
     @Transactional
-    public void createOrder(Integer userId, List<Integer> itemIds) {
-        Double totalCost = 0.0;
+    public void createOrder(Integer userId, OrderCreationRequest orderCreationRequest) {
+        List<Integer> itemIds = orderCreationRequest.getItemIds();
+        double totalCost = 0.0;
         Order order;
         User user;
         List<CartItemDTO> cartItems;
@@ -70,10 +72,10 @@ public class OrderService {
 
         for(CartItemDTO cartItem: cartItems){
             if(cartItem.getSalePrice() != 0.0){
-                totalCost += cartItem.getSalePrice();
+                totalCost += cartItem.getNumberOfPieces() * cartItem.getSalePrice();
             }
             else{
-                totalCost += cartItem.getPrice();
+                totalCost += cartItem.getNumberOfPieces() * cartItem.getPrice();
             }
         }
 

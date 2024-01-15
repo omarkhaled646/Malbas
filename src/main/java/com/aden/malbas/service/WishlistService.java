@@ -19,10 +19,12 @@ public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ItemService itemService;
+    private final UserService userService;
     @Autowired
     private final WishlistItemMapper wishlistItemMapper;
 
-    public List<WishlistItemDTO> getWishlistItems(Integer wishlistId) {
+    public List<WishlistItemDTO> getWishlistItems(Integer userId) {
+        Integer wishlistId = userService.getUser(userId).getWishlist().getId();
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
 
         // TODO: Add custom exception
@@ -43,7 +45,8 @@ public class WishlistService {
     }
 
     @Transactional
-    public void addItem(Integer wishlistId, Integer itemId) {
+    public void addItem(Integer userId, Integer itemId) {
+        Integer wishlistId = userService.getUser(userId).getWishlist().getId();
         Item item = itemService.getItem(itemId);
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
 
@@ -63,7 +66,8 @@ public class WishlistService {
     }
 
     @Transactional
-    public void deleteItem(Integer wishlistId, Integer itemId) {
+    public void deleteItem(Integer userId, Integer itemId) {
+        Integer wishlistId = userService.getUser(userId).getWishlist().getId();
         Item item = itemService.getItem(itemId);
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
 

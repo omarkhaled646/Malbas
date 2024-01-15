@@ -26,7 +26,7 @@ public class SecurityConfiguration {
             http
                 .csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(configurer -> {
-                        configurer.requestMatchers("/Malbas/admin/**").hasAuthority("admin");
+                        configurer.requestMatchers("/Malbas/admin/**").hasAuthority("ADMIN");
                         configurer.requestMatchers("/Malbas/register").permitAll();
                         configurer.requestMatchers("/Malbas/login").permitAll();
                         configurer.requestMatchers("/Malbas").permitAll();

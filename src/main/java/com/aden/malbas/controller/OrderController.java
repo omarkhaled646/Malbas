@@ -2,6 +2,7 @@ package com.aden.malbas.controller;
 
 import com.aden.malbas.dto.OrderDTO;
 import com.aden.malbas.dto.OrderItemDTO;
+import com.aden.malbas.request.OrderCreationRequest;
 import com.aden.malbas.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,13 +34,13 @@ public class OrderController {
 
     @PostMapping("{userId}/createOrder")
     public ResponseEntity<String> createOrder(@PathVariable Integer userId,
-                                              @RequestParam List<Integer> itemIds){
-        orderService.createOrder(userId, itemIds);
+                                              @RequestBody OrderCreationRequest orderCreationRequest){
+        orderService.createOrder(userId, orderCreationRequest);
         return new ResponseEntity<>("Order created successfully.", HttpStatus.CREATED);
     }
 
     @PutMapping("admin/updateOrderStatus/{orderId}")
-    public ResponseEntity<String> createOrder(@PathVariable Integer orderId,
+    public ResponseEntity<String> updateOrderStatus(@PathVariable Integer orderId,
                                               @RequestParam String status){
         orderService.updateOrderStatus(orderId, status);
         return new ResponseEntity<>("Order updated successfully.", HttpStatus.OK);

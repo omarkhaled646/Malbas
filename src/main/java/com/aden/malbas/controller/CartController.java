@@ -1,6 +1,7 @@
 package com.aden.malbas.controller;
 
 import com.aden.malbas.dto.CartItemDTO;
+import com.aden.malbas.request.CartItemRequest;
 import com.aden.malbas.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,56 +18,41 @@ public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping("cart/{cartId}")
-    public ResponseEntity<List<CartItemDTO>> getCartItems(@PathVariable Integer cartId){
-        List<CartItemDTO> cartItemDTOs = cartService.getCartItems(cartId);
+    @GetMapping("cart/{userId}")
+    public ResponseEntity<List<CartItemDTO>> getCartItems(@PathVariable Integer userId){
+        List<CartItemDTO> cartItemDTOs = cartService.getCartItems(userId);
         return new ResponseEntity<>(cartItemDTOs, HttpStatus.OK);
     }
 
-    @PostMapping("cart/{cartId}/addItem")
-    public ResponseEntity<String> addItem(@PathVariable Integer cartId,
-                                                   @RequestParam Integer itemId,
-                                                   @RequestParam  Integer numberOfPieces,
-                                                   @RequestParam String size){
-        cartService.addItem(cartId, itemId, numberOfPieces, size);
+    @PostMapping("cart/{userId}/addItem")
+    public ResponseEntity<String> addItem(@PathVariable Integer userId,
+                                          @RequestBody CartItemRequest cartItemRequest){
+        cartService.addItem(userId, cartItemRequest);
         return new ResponseEntity<>("Item added to the cart successfully",
                 HttpStatus.CREATED);
     }
 
-    @PutMapping("cart/{cartId}/updateItem")
-    public ResponseEntity<String> updateItem(@PathVariable Integer cartId,
-                                                      @RequestParam Integer itemId,
-                                                      @RequestParam(required = false)
-                                                      Integer numberOfPieces,
-                                                      @RequestParam(required = false)
-                                                      String size){
-        cartService.updateItem(cartId, itemId, numberOfPieces, size);
+    @PutMapping("cart/{userId}/updateItem")
+    public ResponseEntity<String> updateItem(@PathVariable Integer userId,
+                                                     @RequestBody CartItemRequest cartItemRequest){
+        cartService.updateItem(userId, cartItemRequest);
         return new ResponseEntity<>("Item updated in the cart successfully",
                 HttpStatus.OK);
     }
 
-    @DeleteMapping("cart/{cartId}/deleteItem")
-    public ResponseEntity<String> deleteItem(@PathVariable Integer cartId, @RequestParam Integer itemId){
-        cartService.deleteItem(cartId, itemId);
+    @DeleteMapping("cart/{userId}/deleteItem/{itemId}")
+    public ResponseEntity<String> deleteItem(@PathVariable Integer userId, @PathVariable Integer itemId){
+        cartService.deleteItem(userId, itemId);
         return new ResponseEntity<>("Item deleted from the cart successfully",
                 HttpStatus.OK);
     }
 
-    @PutMapping("cart/{cartId}/moveItemFromCartToWishlist/{wishlistId}")
-    public ResponseEntity<String> moveItemFromCartToWishlist(@PathVariable Integer cartId,
-                                           @PathVariable Integer wishlistId,
-                                           @RequestParam Integer itemId){
-       cartService.moveItemFromCartToWishlist(cartId,wishlistId,itemId);
+    @PutMapping("cart/{userId}/moveItemFromCartToWishlist/{itemId}")
+    public ResponseEntity<String> moveItemFromCartToWishlist(@PathVariable Integer userId,
+                                           @PathVariable Integer itemId){
+       cartService.moveItemFromCartToWishlist(userId,itemId);
        return new ResponseEntity<>("Item added to wishlist from the cart successfully",
                HttpStatus.OK);
     }
 
-
-    public List<CartItemDTO> getItemsForOrder(Integer cartId, List<Integer> itemIds) {
-        return cartService.getItems(cartId, itemIds);
-    }
-
-    public void deleteItems(Integer cartId, List<Integer> itemIds) {
-        cartService.deleteItems(cartId, itemIds);
-    }
 }

@@ -1,6 +1,7 @@
 package com.aden.malbas.service;
 
 import com.aden.malbas.dto.WishlistItemDTO;
+import com.aden.malbas.exception.NotFoundException;
 import com.aden.malbas.model.classes.Item;
 import com.aden.malbas.model.classes.Wishlist;
 import com.aden.malbas.model.mappers.WishlistItemMapper;
@@ -27,9 +28,8 @@ public class WishlistService {
         Integer wishlistId = userService.getUser(userId).getWishlist().getId();
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
 
-        // TODO: Add custom exception
         if(wishlist == null){
-            throw new NullPointerException();
+            throw new NotFoundException("An error occurred!wishlist is not found");
         }
 
         List<Item> items = wishlist.getItems();
@@ -50,14 +50,12 @@ public class WishlistService {
         Item item = itemService.getItem(itemId);
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
 
-        // TODO: Add custom exception
         if(item == null){
-            throw new NullPointerException();
+            throw new NotFoundException("Item is not found");
         }
 
-        // TODO: Add custom exception
         if(wishlist == null){
-            throw new NullPointerException();
+            throw new NotFoundException("An error occurred!wishlist is not found");
         }
 
         wishlist.add(item);
@@ -71,14 +69,12 @@ public class WishlistService {
         Item item = itemService.getItem(itemId);
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElse(null);
 
-        // TODO: Add custom exception
         if(item == null){
-            throw new NullPointerException();
+            throw new NotFoundException("Item is not found");
         }
 
-        // TODO: Add custom exception
         if(wishlist == null){
-            throw new NullPointerException();
+            throw new NotFoundException("An error occurred!wishlist is not found");
         }
 
         wishlist.delete(item);

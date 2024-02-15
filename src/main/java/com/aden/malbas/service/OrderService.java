@@ -3,6 +3,8 @@
 import com.aden.malbas.dto.CartItemDTO;
 import com.aden.malbas.dto.OrderDTO;
 import com.aden.malbas.dto.OrderItemDTO;
+import com.aden.malbas.exception.InvalidArgumentException;
+import com.aden.malbas.exception.NotFoundException;
 import com.aden.malbas.model.classes.*;
 import com.aden.malbas.model.enums.Status;
 import com.aden.malbas.model.mappers.OrderItemMapper;
@@ -33,7 +35,13 @@ public class OrderService {
     private final OrderItemMapper orderItemMapper;
 
     public List<OrderDTO> getOrders(Integer userId) {
-        List<Order> orders = orderRepository.findOrdersBy(userId);
+        List<Order> orders;
+        try {
+            orders = orderRepository.findOrdersBy(userId);
+        }catch (Exception exception){
+            throw new NotFoundException("User is not found");
+        }
+
         List<OrderDTO> ordersDTO = new ArrayList<>();
         OrderDTO orderDTO;
 
@@ -48,7 +56,12 @@ public class OrderService {
     public List<OrderItemDTO> getOrderInfo(Integer userId, Integer orderId) {
         List<OrderItemDTO> orderItemsDTO = new ArrayList<>();
         OrderItemDTO orderItemDTO;
-        List<OrderItem> orderItems = orderItemRepository.findBy(orderId);
+        List<OrderItem> orderItems;
+        try {
+            orderItems = orderItemRepository.findBy(orderId);
+        } catch (Exception exception){
+            throw new NotFoundException("Order is not found");
+        }
 
         for(OrderItem orderItem: orderItems){
             orderItemDTO = orderItemMapper.orderItemToOrderItemDTO(orderItem);
@@ -131,12 +144,15 @@ public class OrderService {
 
         order = orderRepository.findById(orderId).orElse(null);
 
-        // TODO: Add custom exception
         if(order == null){
-            throw new RuntimeException();
+            throw new NotFoundException("Order is not found");
         }
 
-        order.setStatus(Status.valueOf(status.toUpperCase()));
+        try {
+            order.setStatus(Status.valueOf(status.toUpperCase()));
+        }catch (Exception exception){
+            throw new InvalidArgumentException("You entered invalid status!");
+        }
         orderRepository.save(order);
     }
 }

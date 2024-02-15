@@ -1,6 +1,9 @@
 package com.aden.malbas.service;
 
 import com.aden.malbas.dto.CartItemDTO;
+import com.aden.malbas.exception.InvalidArgumentException;
+import com.aden.malbas.exception.SizeNotAvailableException;
+import com.aden.malbas.exception.NotFoundException;
 import com.aden.malbas.model.classes.*;
 import com.aden.malbas.model.mappers.CartItemMapper;
 import com.aden.malbas.repository.CartITemRepository;
@@ -34,14 +37,20 @@ public class CartService {
         Cart cart = cartRepository.findById(cartId).orElse(null);
         cartItemKey = new CartItemKey(cartId, cartItemRequest.getItemId());
 
-        // TODO: Add custom exception
-        if(!item.isSizeAvailable(cartItemRequest.getSize())){
-            throw new RuntimeException();
+        if (cartItemRequest.getNumberOfPieces() == null && cartItemRequest.getSize() == null){
+            throw new InvalidArgumentException("You didn't enter the size or the number of pieces or both");
         }
 
-        // TODO: Add custom exception
+        if (cartItemRequest.getNumberOfPieces() == null){
+            throw new InvalidArgumentException("You didn't enter the number of pieces");
+        }
+
+        if(!item.isSizeAvailable(cartItemRequest.getSize())){
+            throw new SizeNotAvailableException("The requested size is not available for this item");
+        }
+
         if(cart == null){
-            throw new NullPointerException();
+            throw new NotFoundException("An error occurred! User is Not Found");
         }
 
         CartItem cartItem = CartItem
@@ -62,21 +71,23 @@ public class CartService {
         cartItemKey = new CartItemKey(cartId, cartItemRequest.getItemId());
         CartItem cartItem = cartITemRepository.findById(cartItemKey).orElse(null);
 
-        // TODO: Add custom exception
         if(cartItem == null){
-            throw new NullPointerException();
+            throw new NotFoundException("This item is not in your cart!");
         }
 
-        if(cartItemRequest.getNumberOfPieces() != null){
-            cartItem.setNumberOfPieces(cartItemRequest.getNumberOfPieces());
-        }
-
-        if(cartItemRequest.getSize() != null){
-
-            if(!cartItem.getItem().isSizeAvailable(cartItemRequest.getSize())){
-                throw new RuntimeException();
+        if (cartItemRequest.getNumberOfPieces() == null && cartItemRequest.getSize() == null){
+            throw new InvalidArgumentException("You didn't edit the requested item");
+        }else {
+            if (cartItemRequest.getNumberOfPieces() != null) {
+                cartItem.setNumberOfPieces(cartItemRequest.getNumberOfPieces());
             }
-            cartItem.setSize(cartItem.getSize());
+            if (cartItemRequest.getSize() != null) {
+
+                if (!cartItem.getItem().isSizeAvailable(cartItemRequest.getSize())) {
+                    throw new SizeNotAvailableException("The requested size is not available for this item");
+                }
+                cartItem.setSize(cartItem.getSize());
+            }
         }
 
         cartITemRepository.save(cartItem);
@@ -85,10 +96,12 @@ public class CartService {
     @Transactional
     public void deleteItem(Integer userId, Integer itemId) {
         Integer cartId = userService.getUser(userId).getCart().getId();
-        System.out.println(cartId);
         cartItemKey = new CartItemKey(cartId, itemId);
-
-        cartITemRepository.deleteById(cartItemKey);
+        try {
+            cartITemRepository.deleteById(cartItemKey);
+        }catch (Exception exception){
+            throw new NotFoundException("The requested item is not found in your cart");
+        }
     }
 
     public List<CartItemDTO> getCartItems(Integer userId) {
@@ -127,9 +140,8 @@ public class CartService {
         cartItemKey = new CartItemKey(cartId, itemId);
         cartItem = cartITemRepository.findById(cartItemKey).orElse(null);
 
-        //TODO: Add custom exception
         if(cartItem == null){
-            throw new NullPointerException();
+            throw new NotFoundException("This item is not in your cart!");
         }
 
         cartItemDTO = cartItemMapper.cartItemToCartItemDTO(cartItem, item);

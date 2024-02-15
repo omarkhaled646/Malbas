@@ -1,6 +1,8 @@
 package com.aden.malbas.controller;
 
 import com.aden.malbas.dto.UserDTO;
+import com.aden.malbas.exception.ServerException;
+import com.aden.malbas.exception.NotFoundException;
 import com.aden.malbas.request.AuthenticationRequest;
 import com.aden.malbas.request.AuthenticationResponse;
 import com.aden.malbas.request.RegisterRequest;
@@ -10,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/Malbas")
@@ -36,14 +36,35 @@ public class UserController {
 
     @PutMapping("editProfile")
     public ResponseEntity<String> editProfile(@Valid @RequestBody UserDTO userDTO){
-        userService.update(userDTO);
-        return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+        try {
+            userService.update(userDTO);
+            return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+        }catch (NotFoundException userNotFoundException){
+            throw new NotFoundException(userNotFoundException.getMessage());
+        }catch (Exception e){
+            throw new ServerException("An Error Occurred");
+        }
     }
 
     @DeleteMapping("deleteAccount/{userId}")
     public ResponseEntity<String> deleteAccount(@PathVariable Integer userId){
-        userService.deleteAccount(userId);
-        return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        try {
+            userService.deleteAccount(userId);
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        }catch (NotFoundException userNotFoundException){
+            throw new NotFoundException(userNotFoundException.getMessage());
+        }catch (Exception e){
+            throw new ServerException("An Error Occurred");
+        }
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> notFoundHandler(Exception exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> serverExceptionHandler(Exception exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

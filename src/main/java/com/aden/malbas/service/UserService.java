@@ -1,6 +1,7 @@
 package com.aden.malbas.service;
 
 import com.aden.malbas.dto.UserDTO;
+import com.aden.malbas.exception.NotFoundException;
 import com.aden.malbas.model.classes.Cart;
 import com.aden.malbas.model.classes.Order;
 import com.aden.malbas.model.classes.User;
@@ -56,8 +57,6 @@ public class UserService {
 
         userRepository.save(user);
 
-        // Map<String, Object> claims = convertUserToMap(user);
-
         var token = jwtService.generateToken(user.getUsername());
 
         return AuthenticationResponse
@@ -76,9 +75,8 @@ public class UserService {
                         request.getPassword()
                 )
         );
-        System.out.println("Here");
+
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        // Map<String, Object> claims = convertUserToMap(user);
         var token = jwtService.generateToken(user.getUsername());
         System.out.println(user);
         return AuthenticationResponse
@@ -94,9 +92,9 @@ public class UserService {
     public void update(UserDTO userDTO) {
         User userFromDB = userRepository.findById(userDTO.getId()).orElse(null);
         User user;
-        // TODO: Add custom exception
+
         if(userFromDB == null){
-            throw new NullPointerException();
+            throw new NotFoundException("User is not found");
         }
         user = userMapper.userDTOToUser(userDTO);
         user.setCart(userFromDB.getCart());
@@ -113,9 +111,8 @@ public class UserService {
     public User getUser(Integer userId) {
         User user = userRepository.findById(userId).orElse(null);
 
-        // TODO: Add custom exception
         if(user == null){
-            throw new NullPointerException();
+            throw new NotFoundException("User is not found");
         }
 
         return user;

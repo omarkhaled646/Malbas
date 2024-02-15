@@ -1,6 +1,7 @@
 package com.aden.malbas.model.classes;
 
 import com.aden.malbas.dto.ItemDTO;
+import com.aden.malbas.exception.InvalidArgumentException;
 import com.aden.malbas.model.enums.NonApparelSize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -57,13 +58,11 @@ public class HomeItem extends Item{
                 nonApparelSize = NonApparelSize.valueOf(sizeName.toUpperCase());
             }
             this.availableSizes.add(nonApparelSize);
-        } catch (IllegalArgumentException exception) {
-            // TODO: Add custom exception
-            throw new IllegalArgumentException();
-        } catch (ArrayIndexOutOfBoundsException exception) {
-            // TODO: Add custom exception
+        } catch (InvalidArgumentException exception) {
+            throw new InvalidArgumentException("The new size is not a valid size!");
+        } /*catch (ArrayIndexOutOfBoundsException exception) {
             throw new ArrayIndexOutOfBoundsException();
-        }
+        }*/
     }
 
     @Override

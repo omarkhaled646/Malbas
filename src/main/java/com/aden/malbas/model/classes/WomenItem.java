@@ -1,6 +1,7 @@
 package com.aden.malbas.model.classes;
 
 import com.aden.malbas.dto.ItemDTO;
+import com.aden.malbas.exception.InvalidArgumentException;
 import com.aden.malbas.model.enums.AdultSize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -49,8 +50,8 @@ public class WomenItem extends Item{
         try {
             AdultSize adultSize = AdultSize.valueOf(sizeName.toUpperCase());
             this.availableSizes.add(adultSize);
-        } catch (IllegalArgumentException exception) {
-            throw new IllegalArgumentException();
+        } catch (InvalidArgumentException exception) {
+            throw new InvalidArgumentException("The new size is not a valid size!");
         }
     }
 
